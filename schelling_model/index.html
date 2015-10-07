@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Модель Шеллинга</title>
+    <link rel="stylesheet" type="text/css" href="stylesheet.css">
+</head>
+
+<body>
+    <button onclick="step()" class="btn" style="width: 35.8vw">Старт</button>
+    <div id="map" style="position: relative"></div>
+</body>
+
+<script src="cellauto.js"></script>
+<script src="frame.js"></script>
+<script>
+    var world = new CAWorld({
+        width: 30,
+        height: 30,
+        cellSize: 1
+    });
+
+    world.registerCellType('agents', {
+        getColor: function () {
+            return this.color;
+        },
+        process: function (n) {
+            if(this.color != 'white') {
+                n = getN(n);
+                var happy = 0;
+                for(var i = 0; i < n.length; i ++) {
+                    if(n[i].wasColor == this.wasColor) {
+                        happy ++;
+                    }
+                }
+                if((happy / n.length) * 100 < 30) {
+                    var freeHouses = [];
+                    for(var y = 0; y < world.grid.length; y ++) {
+                        for(var x = 0; x < world.grid[y].length; x ++) {
+                            if(world.grid[y][x].color == 'white') {
+                                freeHouses.push(world.grid[y][x]);
+                            }
+                        }
+                    }
+                    var newHouse = freeHouses[Math.floor(Math.random() * freeHouses.length)];
+                    newHouse.color = this.color;
+                    this.color = 'white';
+                }
+            }
+        },
+        reset: function () {
+            this.wasColor = this.color;
+        }
+    }, function () {
+        if(Math.random() < 0.3) {
+            this.color = 'white';
+        } else if(Math.random() < 0.5) {
+            this.color = 'red';
+        } else {
+            this.color = 'blue';
+        }
+    });
+
+    world.initialize([
+        { name: 'agents', distribution: 100 }
+    ]);
+
+    start();
+
+    function getN(n) {
+        var result = [];
+        for(var i = 0; i < n.length; i ++) {
+            if(n[i] != null)
+                result.push(n[i]);
+        }
+        return result;
+    }
+</script>
+</html>
