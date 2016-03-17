@@ -20,36 +20,44 @@
         cellSize: 1
     });
 
+    var random;
+    var id;
+
     world.registerCellType('agents', {
         getColor: function () {
             return this.color;
         },
         process: function (n) {
-            if(this.color != 'white') {
-                n = getN(n);
-                var happy = 0;
-                for(var i = 0; i < n.length; i ++) {
-                    if(n[i].wasColor == this.wasColor) {
-                        happy ++;
-                    }
-                }
-                if((happy / n.length) * 100 < 30) {
-                    var freeHouses = [];
-                    for(var y = 0; y < world.grid.length; y ++) {
-                        for(var x = 0; x < world.grid[y].length; x ++) {
-                            if(world.grid[y][x].color == 'white') {
-                                freeHouses.push(world.grid[y][x]);
-                            }
-                        }
-                    }
-                    var newHouse = freeHouses[Math.floor(Math.random() * freeHouses.length)];
-                    newHouse.color = this.color;
-                    this.color = 'white';
-                }
-            }
+        	if(id == random) {
+	            if(this.color != 'white') {
+	                n = getN(n);
+	                var happy = 0;
+	                for(var i = 0; i < n.length; i ++) {
+	                    if(n[i].wasColor == this.wasColor) {
+	                        happy ++;
+	                    }
+	                }
+	                if((happy / n.length) * 100 < 30) {
+	                    var freeHouses = [];
+	                    for(var y = 0; y < world.grid.length; y ++) {
+	                        for(var x = 0; x < world.grid[y].length; x ++) {
+	                            if(world.grid[y][x].color == 'white') {
+	                                freeHouses.push(world.grid[y][x]);
+	                            }
+	                        }
+	                    }
+	                    var newHouse = freeHouses[Math.floor(Math.random() * freeHouses.length)];
+	                    newHouse.color = this.color;
+	                    this.color = 'white';
+	                }
+	            }
+        	}
+        	id ++;
         },
         reset: function () {
             this.wasColor = this.color;
+            id = 0;
+            random = Math.floor(Math.random() * 900);
         }
     }, function () {
         if(Math.random() < 0.3) {
